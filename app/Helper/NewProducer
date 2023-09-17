@@ -1,0 +1,20 @@
+use longlang\phpkafka\Producer\Producer;
+use longlang\phpkafka\Producer\ProducerConfig;
+use longlang\phpkafka\Protocol\RecordBatch\RecordHeader;
+
+$config = new ProducerConfig();
+$config->setBootstrapServer('b-2.mskkafkacluster.ooub6r.c4.kafka.us-east-1.amazonaws.com:9092');
+$config->setUpdateBrokers(true);
+$config->setAcks(-1);
+$producer = new Producer($config);
+$topic = 'MSKTutorialTopic';
+$value = 'Product successfully added'; // Message indicating the successful addition of a product
+$key = uniqid('', true);
+$producer->send($topic, $value, $key);
+
+// Set headers using an array of RecordHeader objects
+$headers = [
+    new RecordHeader('event_type', 'product_added'), // Indicate the type of event
+    new RecordHeader('product_id', '12345'), // Include product ID or any relevant information
+];
+$producer->send($topic, $value, $key, null, $headers);
